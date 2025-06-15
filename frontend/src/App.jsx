@@ -40,10 +40,40 @@ function App() {
         <Route path="/verify-2fa" element={<Verify2FA />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/settings" element={<Settings />}>
-          <Route path="account" element={<AccountSettings />} />
-          <Route path="password" element={<PasswordSettings />} />
-          <Route index element={<Navigate to="account" replace />} />
+        <Route 
+          path="/settings" 
+          element={
+            <ProtectedRoute 
+              allowedRoles={["ADMINISTRADOR", "SUPERVISOR", "EGRESADO"]}
+            >
+              <Settings />
+            </ProtectedRoute>}>
+          <Route 
+            path="account" 
+            element={
+              <ProtectedRoute 
+                allowedRoles={["ADMINISTRADOR", "SUPERVISOR", "EGRESADO"]}
+              >
+                <AccountSettings />
+              </ProtectedRoute>} 
+          />
+          <Route
+            path="password" 
+            element={
+              <ProtectedRoute 
+                allowedRoles={["ADMINISTRADOR", "SUPERVISOR", "EGRESADO"]}
+              >
+                <PasswordSettings />
+              </ProtectedRoute>} 
+          />
+          <Route 
+            index 
+            element={
+              <Navigate 
+                to="account" 
+                replace 
+              />} 
+          />
         </Route>
         <Route
           path="/"
@@ -91,7 +121,7 @@ function App() {
             path="/activity-logs"
             element={
               <ProtectedRoute allowedRoles={["SUPERVISOR"]}>
-                  <ActivityLogs />
+                <ActivityLogs />
               </ProtectedRoute>
             }
           />

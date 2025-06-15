@@ -1,7 +1,7 @@
-import { createContext, useState, useContext, useEffect } from 'react';
-import axios from 'axios';
+import { createContext, useState, useContext, useEffect } from "react";
+import axios from "axios";
 
-const BASE_URL = 'http://localhost:8080/';
+const BASE_URL = "http://localhost:8080/";
 
 const AuthContext = createContext();
 
@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
 
       // Initial login attempt
       const response = await axios.post(`${BASE_URL}auth/login`, credentials, {
-        withCredentials: true
+        withCredentials: true,
       });
 
       const { requires2fa, message } = response.data;
@@ -34,13 +34,12 @@ export function AuthProvider({ children }) {
       }
 
       // If no 2FA required, fetch user data and set user
-      const { data } = await axios.get(`${BASE_URL}api/v1/users/session/user-data`, {
-        withCredentials: true
-      });
-      setUser(data);
-      return true;
+      if (response.status === 200) {
+        await fetchUserData();
+        return true;
+      }
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
       return false;
     }
   };
@@ -50,24 +49,35 @@ export function AuthProvider({ children }) {
       await axios.post(`${BASE_URL}auth/logout`, {}, { withCredentials: true });
       setUser(null);
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
+    }
+  };
+
+  const fetchUserData = async () => {
+    try {
+      const { data } = await axios.get(
+        `${BASE_URL}api/v1/users/session/user-data`,
+        {
+          withCredentials: true,
+        }
+      );
+      setUser(data);
+    } catch (error) {
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const { data } = await axios.get(`${BASE_URL}api/v1/users/session/user-data`, {
-          withCredentials: true
-        });
-        setUser(data);
-      } catch (error) {
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUserData();
+    const publicRoutes = ["/login", "/forgot-password", "/reset-password", "/verify-2fa"];
+    const currentPath = window.location.pathname;
+
+    if (!publicRoutes.includes(currentPath)) {
+      fetchUserData();
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   const value = {
@@ -75,12 +85,14 @@ export function AuthProvider({ children }) {
     setUser,
     loading,
     login,
-    logout
+    logout,
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading ? children : (
+      {!loading ? (
+        children
+      ) : (
         <div className="min-h-screen min-w-screen flex items-center justify-center bg-gray-50">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import SettingsSidebar from '../components/SettingsSidebar';
@@ -25,7 +25,7 @@ export default function Settings() {
         <SettingsSidebar isOpen={sidebarOpen} closeSidebar={closeSidebar} />
         
         <main className="flex-1 overflow-y-auto p-4">
-          <Outlet /> {/* Esto renderizará las sub-rutas */}
+          <Outlet /> 
         </main>
       </div>
     </div>
