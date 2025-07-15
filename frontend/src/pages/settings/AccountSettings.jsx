@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const BASE_URL = "http://localhost:8080/";
@@ -18,6 +19,7 @@ export default function AccountSettings() {
   const [isDirty, setIsDirty] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [deleteEmail, setDeleteEmail] = useState("");
+  const navigate = useNavigate();
 
   // Inicializar formulario con datos del usuario
   useEffect(() => {
