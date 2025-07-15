@@ -31,6 +31,7 @@ export default function AccountSettings() {
         dni: user.dni || "",
       });
     }
+    console.log(user);
   }, [user]);
 
   const handleChange = (e) => {
@@ -101,12 +102,12 @@ export default function AccountSettings() {
     try {
       const response = await axios.patch(
         `${BASE_URL}auth/user/2fa/change/${user.id}`,
-        {
-          withCredentials: true,
-        }
+        null,
+        { withCredentials: true }
       );
 
       const newState2fa = !user.is2faEnabled;
+      console.log("Nuevo estado de 2FA:", newState2fa);
       setUser({ ...user, is2faEnabled: newState2fa });
 
       toast.success(

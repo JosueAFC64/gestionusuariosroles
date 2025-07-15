@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { TbReport } from "react-icons/tb";
 import { FiUsers } from "react-icons/fi";
-import { FaHistory } from 'react-icons/fa';
+import { FaHistory } from "react-icons/fa";
 
 export default function Sidebar({ isOpen, closeSidebar }) {
   const { user } = useAuth();
@@ -40,6 +40,24 @@ export default function Sidebar({ isOpen, closeSidebar }) {
                 <FiUsers className="mr-3 h-5 w-5" />
                 Usuarios
               </NavLink>
+            </>
+          )}
+          {user?.rol === "SUPERVISOR" && (
+            <>
+              <NavLink
+                to="/activity-logs"
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                    isActive
+                      ? "bg-blue-600/20 text-blue-400"
+                      : "text-gray-300 hover:bg-gray-700/50 hover:text-white"
+                  }`
+                }
+                onClick={closeSidebar}
+              >
+                <FaHistory className="mr-3" />
+                Registro de Actividades
+              </NavLink>
               <NavLink
                 to="/reportes/rol-distribution"
                 className={({ isActive }) =>
@@ -55,22 +73,6 @@ export default function Sidebar({ isOpen, closeSidebar }) {
                 Reportes
               </NavLink>
             </>
-          )}
-          {user?.rol === "SUPERVISOR" && (
-              <NavLink
-                  to="/activity-logs"
-                  className={({ isActive }) =>
-                      `flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${
-                          isActive
-                              ? "bg-blue-600/20 text-blue-400"
-                              : "text-gray-300 hover:bg-gray-700/50 hover:text-white"
-                      }`
-                  }
-                  onClick={closeSidebar}
-              >
-                <FaHistory className="mr-3" />
-                Registro de Actividades
-              </NavLink>
           )}
         </nav>
 

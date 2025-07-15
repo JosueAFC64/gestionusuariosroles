@@ -35,12 +35,12 @@ public class UserService {
     private final AuthService authService;
 
     /**
-    * Devuelve los datos del usuario en sesión en formato UserDataResponse
-    *
-    * @param request - Cookie que contiene el JWT
-    * @throws EntityNotFoundException - Si el usuario no existe
-    * @return Los datos del usuario en sesión (excepto la contraseña)
-    */
+     * Devuelve los datos del usuario en sesión en formato UserDataResponse
+     *
+     * @param request - Cookie que contiene el JWT
+     * @return Los datos del usuario en sesión (excepto la contraseña)
+     * @throws EntityNotFoundException - Si el usuario no existe
+     */
     @Transactional(readOnly = true)
     public UserDataResponse getUserInSessionData(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
@@ -61,12 +61,12 @@ public class UserService {
     }
 
     /**
-    * Devuelve una lista de datos de todos los usuarios (excepto fechaNacimiento, telefono y contraseña)
-    *
-    * @return Lista de usuarios en formato {@link com.lp.gestionusuariosroles.user.controller.UserSummaryResponse}
-    */
+     * Devuelve una lista de datos de todos los usuarios (excepto fechaNacimiento, telefono y contraseña)
+     *
+     * @return Lista de usuarios en formato {@link com.lp.gestionusuariosroles.user.controller.UserSummaryResponse}
+     */
     @Transactional(readOnly = true)
-    public UserSummaryResponse getAllUsers(int page, int size){
+    public UserSummaryResponse getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> usersPage = repository.findAll(pageable);
 
@@ -102,7 +102,7 @@ public class UserService {
         if (id == null || id < 0) {
             throw new IllegalArgumentException("El id del usuario es inválido");
         }
-        if(userDto == null) {
+        if (userDto == null) {
             throw new IllegalArgumentException("Los datos del usuario no pueden ser nulos");
         }
 
@@ -111,46 +111,46 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
         // Validaciones los datos antes de actualizarlos
-        if(userDto.nombres() != null) {
-            if (userDto.nombres().isBlank()){
+        if (userDto.nombres() != null) {
+            if (userDto.nombres().isBlank()) {
                 throw new IllegalArgumentException("El nombre no puede estar vacío");
             }
             user.setNombres(userDto.nombres());
         }
 
-        if(userDto.apellidos() != null) {
-            if (userDto.apellidos().isBlank()){
+        if (userDto.apellidos() != null) {
+            if (userDto.apellidos().isBlank()) {
                 throw new IllegalArgumentException("El apellido no puede estar vacío");
             }
             user.setApellidos(userDto.apellidos());
         }
 
-        if(userDto.email() != null){
+        if (userDto.email() != null) {
             if (!userDto.email().matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
                 throw new IllegalArgumentException("Formato de email inválido");
             }
             // Solo validar si el email cambió
-            if (!userDto.email().equals(user.getEmail()) && repository.existsByEmail(userDto.email())){
+            if (!userDto.email().equals(user.getEmail()) && repository.existsByEmail(userDto.email())) {
                 throw new IllegalArgumentException("El email ya está registrado con otro usuario");
             }
             user.setEmail(userDto.email());
         }
 
-        if(userDto.fechaNacimiento() != null){
+        if (userDto.fechaNacimiento() != null) {
             if (userDto.fechaNacimiento().isAfter(LocalDate.now())) {
                 throw new IllegalArgumentException("La fecha de nacimiento no puede ser futura");
             }
             user.setFechaNacimiento(userDto.fechaNacimiento());
         }
 
-        if(userDto.telefono() != null){
-            if (userDto.telefono().length() != 9){
+        if (userDto.telefono() != null) {
+            if (userDto.telefono().length() != 9) {
                 throw new IllegalArgumentException("El teléfono debe tener 9 dígitos");
             }
             user.setTelefono(userDto.telefono());
         }
 
-        if(userDto.dni() != null){
+        if (userDto.dni() != null) {
             // Solo validar si el DNI cambió
             if (!userDto.dni().equals(user.getDni()) && repository.existsByDni(userDto.dni())) {
                 throw new IllegalArgumentException("El dni ya está registrado con otro usuario");
@@ -158,7 +158,7 @@ public class UserService {
             user.setDni(userDto.dni());
         }
 
-        if(userDto.rol() != null){
+        if (userDto.rol() != null) {
             user.setRol(userDto.rol());
         }
 
@@ -174,8 +174,8 @@ public class UserService {
      * @return Datos del usuario mapeado a {@link com.lp.gestionusuariosroles.user.controller.UserDataResponse}
      */
     @Transactional(readOnly = true)
-    public UserDataResponse getUserById(Long id){
-        if(id == null || id < 0){
+    public UserDataResponse getUserById(Long id) {
+        if (id == null || id < 0) {
             throw new IllegalArgumentException("El id del usuario es inválido");
         }
         User user = repository.findById(id)
@@ -187,13 +187,13 @@ public class UserService {
     /**
      * Cambia el estado de un usuario (true o false)
      *
-     * @param id El id del usuario a cambiar su estado
+     * @param id          El id del usuario a cambiar su estado
      * @param nuevoEstado El nuevo estado del usuario
      * @throws EntityNotFoundException Si el usuario no existe
      */
     @Transactional
-    public void changeEstado(Long id, Boolean nuevoEstado){
-        if (id == null || id < 0){
+    public void changeEstado(Long id, Boolean nuevoEstado) {
+        if (id == null || id < 0) {
             throw new IllegalArgumentException("El id del usuario es inválido");
         }
         User user = repository.findById(id)
@@ -228,6 +228,13 @@ public class UserService {
         }
 
         return new RolDistributionResponse(distribution);
+    }
+
+    @Transactional(readOnly = true)
+    public UserMetricsResponse getUsersMetrics() {
+        long activeUsers = repository.countUsersByEstado(true);
+        long inactiveUsers = repository.countUsersByEstado(false);
+        return new UserMetricsResponse(activeUsers, inactiveUsers);
     }
 
     /**

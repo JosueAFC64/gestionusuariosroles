@@ -13,6 +13,7 @@ import PasswordSettings from "./pages/settings/PasswordSettings";
 import AccountSettings from "./pages/settings/AccountSettings";
 import Verify2FA from "./pages/Verify2FA";
 import ActivityLogs from "./pages/ActivityLogs";
+import NotFound from "./pages/NotFound";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -126,6 +127,7 @@ function App() {
             }
           />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <ToastContainer
         position="top-right"

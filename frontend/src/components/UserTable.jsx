@@ -22,8 +22,7 @@ export default function UserTable() {
   });
   const [stats, setStats] = useState({
     activeUsers: 0,
-    totalAdmins: 0,
-    totalSupervisors: 0,
+    inactiveUsers: 0,
   });
 
   useEffect(() => {
@@ -46,17 +45,18 @@ export default function UserTable() {
         totalElements: data.totalElements,
       }));
 
+
+      const response = await axios.get(`${BASE_URL}api/v1/users/metrics`, {
+        withCredentials: true,
+      });
+
       // Calcular estadísticas
-      const activeUsers = data.content.filter((u) => u.estado).length;
-      const totalAdmins = data.content.filter((u) => u.rol === "ADMINISTRADOR").length;
-      const totalSupervisors = data.content.filter(
-        (u) => u.rol === "SUPERVISOR"
-      ).length;
+      const activeUsers = response.data.activeUsers;
+      const inactiveUsers = response.data.inactiveUsers;
 
       setStats({
         activeUsers,
-        totalAdmins,
-        totalSupervisors,
+        inactiveUsers,
       });
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -64,6 +64,7 @@ export default function UserTable() {
       setLoading(false);
     }
   };
+
 
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < pagination.totalPages) {
@@ -74,10 +75,6 @@ export default function UserTable() {
   const handleSizeChange = (e) => {
     const newSize = parseInt(e.target.value);
     setPagination((prev) => ({ ...prev, size: newSize, page: 0 }));
-  };
-
-  const formatDateTime = (dateTime) => {
-    return new Date(dateTime).toLocaleString();
   };
   
   const filteredUsers = users.filter((user) => {
@@ -101,17 +98,26 @@ export default function UserTable() {
       );
 
       // Actualizar estadísticas
-      const activeUsers = users.filter((u) =>
-        u.id === userId ? newStatus : u.estado
-      ).length;
-      setStats((prev) => ({
-        ...prev,
-        activeUsers,
+      setStats((prevStats) => ({
+        activeUsers: prevStats.activeUsers + (newStatus ? 1 : -1),
+        inactiveUsers: prevStats.inactiveUsers + (newStatus ? -1 : 1),
       }));
     } catch (error) {
       console.error("Error updating user status:", error);
     }
   };
+
+  const handleDeleteUser = async (id) => {
+    try{
+      await axios.delete(`${BASE_URL}api/v1/users/delete/${id}`, {
+        withCredentials: true,
+      });
+    }catch (error) {
+      console.error("Error deleting user:", error);
+    }finally { 
+      fetchUsers();
+    }
+  }
 
   const exportToPDF = () => {
     // Crear un enlace temporal
@@ -173,18 +179,10 @@ export default function UserTable() {
         </div>
         <div className="bg-white p-4 rounded-lg shadow-lg">
           <h3 className="text-gray-500 text-sm font-medium">
-            Total Administradores
+            Usuarios Inactivos
           </h3>
           <p className="text-2xl text-gray-500 font-semibold">
-            {stats.totalAdmins}
-          </p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow-lg">
-          <h3 className="text-gray-500 text-sm font-medium">
-            Total Supervisores
-          </h3>
-          <p className="text-2xl text-gray-500 font-semibold">
-            {stats.totalSupervisors}
+            {stats.inactiveUsers}
           </p>
         </div>
       </div>
@@ -422,6 +420,7 @@ export default function UserTable() {
                     Editar
                   </Link>
                   <button
+                    onClick={() => handleDeleteUser(user.id)}
                     className={`text-red-300 rounded-lg mr-3 bg-[#1a1a1a] button-p ${
                       authenticatedUser?.id === user.id
                         ? "cursor-na no-bc opacity-50"
@@ -454,8 +453,7 @@ export default function UserTable() {
       {/* Controles de paginación */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="text-sm text-gray-600">
-          Mostrando {pagination.page * pagination.size + 1} -
-          {Math.min(
+          Mostrando {pagination.page * pagination.size + 1} - {Math.min(
             (pagination.page + 1) * pagination.size,
             pagination.totalElements
           )}{" "}

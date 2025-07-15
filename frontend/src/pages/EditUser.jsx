@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaCalendarAlt } from "react-icons/fa";
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 
 const BASE_URL = 'http://localhost:8080/';
@@ -9,7 +10,8 @@ const BASE_URL = 'http://localhost:8080/';
 export default function EditUser() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const [editUser, setEditUser] = useState(null);
+  const {user, setUser} = useAuth();
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     nombres: '',
@@ -27,7 +29,7 @@ export default function EditUser() {
         const { data } = await axios.get(`${BASE_URL}api/v1/users/${id}`, {
           withCredentials: true
         });
-        setUser(data);
+        setEditUser(data);
         setFormData({
           nombres: data.nombres,
           apellidos: data.apellidos,
@@ -44,6 +46,7 @@ export default function EditUser() {
         setLoading(false);
       }
     };
+    console.log(user);
     fetchUser();
   }, [id]);
 
@@ -58,9 +61,16 @@ export default function EditUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.patch(`${BASE_URL}api/v1/users/${id}`, formData, {
+      const response = await axios.patch(`${BASE_URL}api/v1/users/${id}`, formData, {
         withCredentials: true
       });
+
+      console.log(typeof id);
+
+      if (String(user.id) === String(id)) {
+        setUser(response.data);
+      }
+
       toast.success('Usuario actualizado correctamente');
       navigate('/'); // Volver al dashboard después de editar
     } catch (error) {

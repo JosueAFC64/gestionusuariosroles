@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { FaCalendarAlt } from "react-icons/fa";
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const BASE_URL = 'http://localhost:8080/';
 
 export default function NewUser() {
   const navigate = useNavigate();
+  const { user, setUser } = useAuth();
   const [formData, setFormData] = useState({
     nombres: '',
     apellidos: '',
@@ -126,9 +128,19 @@ export default function NewUser() {
               required
             >
               <option value="">Seleccionar rol</option>
-              <option value="ADMINISTRADOR">Administrador</option>
-              <option value="SUPERVISOR">Supervisor</option>
-              <option value="EGRESADO">Egresado</option>
+              {user.rol === "SUPERVISOR" && (
+                <>
+                  <option value="ADMINISTRADOR">Administrador</option>
+                  <option value="SUPERVISOR">Supervisor</option>
+                  <option value="EGRESADO">Egresado</option>
+                </>
+              )}
+              {user.rol === "ADMINISTRADOR" && (
+                <>
+                  <option value="ADMINISTRADOR">Administrador</option>
+                  <option value="EGRESADO">Egresado</option>
+                </>
+              )}
             </select>
           </div>    
 

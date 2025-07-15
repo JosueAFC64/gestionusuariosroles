@@ -45,6 +45,12 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'SUPERVISOR')")
+    @GetMapping("/metrics")
+    public ResponseEntity<UserMetricsResponse> getUserMetrics() {
+        return ResponseEntity.ok(service.getUsersMetrics());
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'SUPERVISOR')")
     @GetMapping("/export/pdf")
     public ResponseEntity<byte[]> exportUsersPdf() {
         byte[] pdfBytes = pdfService.generateUsersPdf();
