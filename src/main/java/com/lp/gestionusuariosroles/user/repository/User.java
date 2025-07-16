@@ -61,7 +61,7 @@ public class User implements UserDetails {
     @Builder.Default
     private Boolean is2faEnabled = false;
 
-    @Column
+    @Column(name = "two_factor_code")
     private String twoFactorCode;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

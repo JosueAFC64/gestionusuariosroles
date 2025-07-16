@@ -33,7 +33,7 @@ export default function Verify2FA() {
       );
 
       // After successful 2FA verification, fetch user data
-      const { data } = await axios.get(`${BASE_URL}api/v1/users/user-data`, {
+      const { data } = await axios.get(`${BASE_URL}api/v1/users/session/user-data`, {
         withCredentials: true
       });
       
