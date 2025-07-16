@@ -127,14 +127,14 @@ export default function AccountSettings() {
   return (
     <div className="w-scren mx-auto bg-gradient-to-b shadow-md">
       <div className="mb-3 bg-gradient-to-b from-gray-900 to-gray-800 rounded-lg p-6">
-        <h2 className="text-2xl font-bold mb-6 text-[#646cff]">
+        <h2 className="text-3xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
           Configuración de Cuenta
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[#646cff] mb-1">
+              <label className="block text-mb-1">
                 Nombres
               </label>
               <input
@@ -147,7 +147,7 @@ export default function AccountSettings() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#646cff] mb-1">
+              <label className="block text-sm font-medium mb-1">
                 Apellidos
               </label>
               <input
@@ -160,7 +160,7 @@ export default function AccountSettings() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#646cff] mb-1">
+              <label className="block text-sm font-medium mb-1">
                 Email
               </label>
               <input
@@ -174,7 +174,7 @@ export default function AccountSettings() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#646cff] mb-1">
+              <label className="block text-sm font-medium mb-1">
                 Fecha de Nacimiento
               </label>
               <input
@@ -187,7 +187,7 @@ export default function AccountSettings() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#646cff] mb-1">
+              <label className="block text-sm font-medium mb-1">
                 Teléfono
               </label>
               <input
@@ -200,7 +200,7 @@ export default function AccountSettings() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#646cff] mb-1">
+              <label className="block text-sm font-medium mb-1">
                 DNI
               </label>
               <input
@@ -230,7 +230,7 @@ export default function AccountSettings() {
       </div>
 
       <div className="bg-gradient-to-b from-gray-900 to-gray-800 rounded-lg shadow-md p-6 mb-3 border border-blue-200">
-        <h2 className="text-2xl font-bold mb-4 text-[#646cff]">
+        <h2 className="text-3xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
           Autenticación en Dos Pasos (2FA)
         </h2>
 

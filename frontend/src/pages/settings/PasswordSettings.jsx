@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { FaEye } from "react-icons/fa";
 import axios from "axios";
@@ -35,14 +35,14 @@ export default function PasswordSettings() {
 
   return (
     <div className="max-w-screen mx-auto bg-gradient-to-b from-gray-900 to-gray-800 rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold mb-6 text-[#646cff]">
+      <h2 className="text-3xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
         Actualizar Contraseña
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="min-w-0">
-            <label className="block text-sm font-medium text-[#646cff] mb-1">
+            <label className="block text-sm font-medium mb-1">
               Contraseña actual
             </label>
             <div className="relative">
@@ -65,7 +65,7 @@ export default function PasswordSettings() {
           </div>
 
           <div className="min-w-0">
-            <label className="block text-sm font-medium text-[#646cff] mb-1">
+            <label className="block text-sm font-medium mb-1">
               Nueva contraseña
             </label>
             <div className="relative">

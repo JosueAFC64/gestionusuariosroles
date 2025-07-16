@@ -174,7 +174,10 @@ export default function EditUser() {
               name="rol"
               value={formData.rol}
               onChange={handleChange}
-              className="w-full text-black px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className={`w-full text-black px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                editUser.id === user.id ? 'bg-gray-100 cursor-not-allowed' : ''
+              }`}
+              disabled={editUser.id === user.id}
               required
             >
               <option value="">Seleccionar rol</option>
